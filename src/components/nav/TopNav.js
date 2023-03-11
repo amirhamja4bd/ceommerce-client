@@ -1,8 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Badge } from 'antd';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import '../../assets/css/style.css'
+import axios from 'axios';
+
 const TopNav = () => {
+
+    const[carts, setCarts] = useState([]);
+
+    const cartLength = carts?.items?.length;
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        loadCarts();
+    }, []);
+
+    const loadCarts = async (req, res) => {
+        try {
+          const { data } = await axios.get("/carts");
+          setCarts(data);
+          console.log("CART",data);
+        } catch (err) {
+          console.log(err);
+        }
+    };
+    
+
     return (
         <div>
             <div id="top-header bg-light">
@@ -27,7 +51,7 @@ const TopNav = () => {
                         <li>
                             <Badge 
                                 className='fs-6 pt-1'
-                                count="2"
+                                count={cartLength}
                                 offset={[-24, 5]}
                                 size="small"
                                 showZero={true}

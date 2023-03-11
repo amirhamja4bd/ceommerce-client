@@ -8,15 +8,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js'
 import { AuthProvider } from './context/AuthContext';
 
-
-
 const container = document.getElementById('root');
 const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <App />
+        <App />
     </AuthProvider>
   </React.StrictMode>
 );

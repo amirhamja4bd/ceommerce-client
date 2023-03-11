@@ -15,8 +15,10 @@ const UserRoute = () => {
     useEffect(()=>{
         const isUser = async ()=>{
             const {data} = await axios.get(`/is-user`);
+            console.log("=====",data);
             if(data.ok){
                 setOk(true);
+
             }
             else{
                 setOk(false);

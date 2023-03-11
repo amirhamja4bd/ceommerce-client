@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 const Login = () => {
-    const [auth, setAuth ] = useAuth();
+    const [auth, setAuth ,token, setToken] = useAuth();
     const [email, setEmail ] = useState('admin@gmail.com');
     const [password, setPassword ] = useState('11111111');
 
@@ -21,7 +21,9 @@ const Login = () => {
             }
             else{
                 localStorage.setItem("auth", JSON.stringify(data));
+                localStorage.setItem("token", data.token);
                 setAuth({ ...auth, user: data.user, token: data.token });
+                setToken(data.token )
                 toast.success(" Login Successful")
                 navigate( location.state || `/dashboard/${data?.user?.role === 1 ? "admin" : "user"}`);
             }

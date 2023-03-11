@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
@@ -31,9 +32,13 @@ const loadReview =async () =>{
 const addToCart = async () => {
   try {
     const {data} = await axios.post('/cart', { productId: p._id, quantity });
-    toast.success('Added to cart successfully')
-    console.log(data);
-  } 
+    const productId = p._id
+    const itemIndex = data.items.findIndex(item => item.product === productId);
+    if (itemIndex !== -1) {
+      const quant = data.items[itemIndex].quantity;
+      toast.success(`${quant} Item Add to Cart Successfully`);
+    } 
+  }
   catch (error) {
     console.error(error);
     toast.error('Could not add item to cart');

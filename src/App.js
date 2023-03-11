@@ -28,6 +28,7 @@ import UserRoute from './routes/UserRoute';
 import { FloatButton } from 'antd';
 import ProductView from './pages/ProductView';
 import Shop from './pages/Shop';
+import Cart from './pages/Cart';
 
 function App() {
   const [auth , setAuth] = useAuth();
@@ -42,6 +43,7 @@ function App() {
           <Route path='/' element={<Home/>} />
           <Route path='/shop' element={<Shop/>} />
           <Route path='/categories' element={<Categories/>} />
+          <Route path='/cart' element={<Cart/>} />
           <Route path='/product/:slug' element={<ProductView/>} />
           <Route path='/login' element={<Login/>} />
           <Route path='/register' element={<Register/>} />

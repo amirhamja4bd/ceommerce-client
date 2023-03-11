@@ -60,7 +60,6 @@ const Product = () => {
     }
     const loadProducts = async () => {
         try{
-            loader.classList.remove("d-none")
             const {data} = await axios.get(`/product/${params.slug}`);
             setTitle(data.title);
             setDescription(data.description);
@@ -70,7 +69,6 @@ const Product = () => {
             setQuantity(data.quantity);
             setId(data._id);
             console.log(data);
-            loader.classList.add("d-none")
         }
         catch(error){
             console.log(error);
