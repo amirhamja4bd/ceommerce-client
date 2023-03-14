@@ -4,24 +4,28 @@ import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useLocation, useNavigate } from 'react-router-dom';
 import "./product.css";
+import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
+import {BsStarHalf } from 'react-icons/bs';
 
 const ProductCard = ({p}) => {
 
   const [review, setReview] = useState([]);
   const [quantity, setQuantity] = useState(1);
+  // const [wishList, setWishList] = useState();
 
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     loadReview();
+    // loadWishList();
 },[])
 
-// category Load
+// Review Load
 const loadReview =async () =>{
     try{
         // loader.classList.remove("d-none")
-        const { data } = await axios.get(`/review/${p._id}`);
+        const { data } = await axios.get(`/review/${p?._id}`);
         setReview(data);
         // loader.classList.add("d-none")
     }
@@ -31,13 +35,13 @@ const loadReview =async () =>{
 }
 const addToCart = async () => {
   try {
-    const {data} = await axios.post('/cart', { productId: p._id, quantity });
+    const {data} = await axios.post('/cart', { productId: p?._id, quantity });
     const productId = p._id
     const itemIndex = data.items.findIndex(item => item.product === productId);
     if (itemIndex !== -1) {
-      const quant = data.items[itemIndex].quantity;
-      toast.success(`${quant} Item Add to Cart Successfully`);
-    } 
+      const countQuantity = data.items[itemIndex].quantity;
+      toast.success(`${countQuantity} Item Add to Cart Successfully`);
+    }
   }
   catch (error) {
     console.error(error);
@@ -46,10 +50,31 @@ const addToCart = async () => {
   }
 };
 
+const addWishList = async () => {
+  try {
+    const {data} = await axios.post('/create-wishlist', { product: p?._id, isLiked: true });
+      toast.success('Item Add to WishList Successfully');
+  }
+  catch (error) {
+    console.error(error);
+    toast.error('Could not add item to WishList');
+    navigate(`/login`, { state: location.pathname, });
+  }
+};
+
+// const loadWishList =async () =>{
+//   try{
+//       const  {data}  = await axios.get(`/wishlists`);
+//       setWishList(data);
+//   }
+//   catch(error){
+//       console.log(error);
+//   }
+// }
 
   return (
     <>
-      <div class="mx-2">
+      <div class="mx-1">
         <div class="product-grid">
           <div class="product-image">
             <a  class="image">
@@ -57,20 +82,20 @@ const addToCart = async () => {
                 className='rounded-top w-100 pic-1'
                 src={`${process.env.REACT_APP_API}/product/photo/${p?._id}`}
                 alt="name"
-                style={{ height: "200px", objectFit: "cover" }}
+                style={{ height: "150px", objectFit: "cover" }}
             />
             <img
                 className='rounded-top w-100 pic-2'
                 src={`${process.env.REACT_APP_API}/product/photo/${p?._id}`}
                 alt="name"
-                style={{ height: "200px", objectFit: "cover" }}
+                style={{ height: "150px", objectFit: "cover" }}
             />
             </a>
             <span class="product-new-label" data-bs-toggle="Quantity" data-bs-placement="top">{p?.quantity}</span>
             {/* <span class="product-new-label" data-tooltip="Quantity">{p?.quantity}</span> */}
             <ul class="product-links">
               <li>
-                <a href="#">
+                <a onClick={addWishList} className='pointer' >
                   <i class="fa fa-heart"></i>
                 </a>
               </li>
@@ -97,7 +122,7 @@ const addToCart = async () => {
                   <i class="fa fa-star"></i>
                 </li>
                 <li class="list-inline-item">
-                  <i class="fa fa-star-o"></i>
+                <i class="fa-solid fa-star-half-stroke"></i>
                 </li>
                 ({review?.length})
               </ul>

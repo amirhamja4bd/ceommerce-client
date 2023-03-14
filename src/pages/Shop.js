@@ -3,6 +3,8 @@ import axios from "axios";
 import ProductCard from "../components/card/ProductCard";
 import { Checkbox, Radio } from "antd";
 import { prices } from "./Prices";
+import { Collapse, Divider } from 'antd';
+const { Panel } = Collapse;
 
 const Shop=()=> {
     const [categories, setCategories] = useState([]);
@@ -86,7 +88,6 @@ const Shop=()=> {
     };
 
     const handleCheck = (value, id) => {
-        console.log(value, id);
         let all = [...checked];
         if (value) {
             all.push(id);
@@ -101,22 +102,21 @@ const Shop=()=> {
         <>
             <div className="container-fluid">
                 <div className="row">
-                <div className="col-md-3">
-                        <h2 className="p-3 mt-2 mb-2 h4 bg-light text-center">
-                            Filter by Categories
-                        </h2>
+                <div className="col-md-3 pt-5">
+                    <Collapse>
+                        <Panel header="Filter by Categories" key="1">
                         <div className="row ps-5">
                                 {categories?.map((c) => (
-                                    <div key={c?._id} style={{ marginLeft: "8px" }}>
+                                    <div key={c?._id} >
                                         <Checkbox key={c?._id} onChange={(e) => handleCheck(e.target.checked, c?._id)} value={c?.array}>{c?.name}</Checkbox>
                                     </div>
                                 ))}
                         </div>
-
-                        <h2 className="p-3 mt-2 mb-2 h4 bg-light text-center">
-                            Filter by Price
-                        </h2>
-                        <div className="row ps-5">
+                        </Panel>
+                    </Collapse>
+                    <Collapse className="mt-3">
+                        <Panel header="Filter by Price" key="1">
+                        <div className="row ps-5 mt-3">
                             <Radio.Group onChange={(e) => setRadio(e.target.value)}>
                                 {prices?.map((p) => (
                                     <div key={p._id} style={{ marginLeft: "8px" }}>
@@ -125,15 +125,18 @@ const Shop=()=> {
                                 ))}
                             </Radio.Group>
                         </div>
-                        <div className="p-5 pt-0 mt-5">
-                            <button
-                                className="secondary-btn col-12"
-                                onClick={() => window.location.reload()}
-                            >
-                                Reset
-                            </button>
-                        </div>
+                        </Panel>
+                    </Collapse>
+                        
+                    <div className=" pt-0 mt-3">
+                        <button
+                            className="secondary-btn col-12"
+                            onClick={() => window.location.reload()}
+                        >
+                            Reset
+                        </button>
                     </div>
+                </div>
 
                     <div className="col-md-9">
                         <h2 className="p-3 mt-2 mb-2 h4 bg-light text-center">
@@ -143,10 +146,11 @@ const Shop=()=> {
                         <div className="row">
                             
                             {products?.map((p) => (
-                                <div className="col-md-4 mt-4" key={p?._id}>
+                                <div className="col-md-3 col-sm-4 mt-4 " key={p?._id}>
                                     <ProductCard p={p} />
                                 </div>
                             ))}
+                            {products.length ? (
                              <div className="container text-center p-5">
                                 {products && products.length < total && (
                                 <div className='divider'>
@@ -164,6 +168,7 @@ const Shop=()=> {
                                 </div> 
                                 )}
                             </div>
+                            ) : (<p className="text-center">Nothing Found</p>) }
                         </div>
                     </div>
                 </div>

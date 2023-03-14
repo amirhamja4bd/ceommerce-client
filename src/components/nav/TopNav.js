@@ -6,21 +6,33 @@ import axios from 'axios';
 
 const TopNav = () => {
 
-    const[carts, setCarts] = useState([]);
-
-    const cartLength = carts?.items?.length;
-
     const navigate = useNavigate();
+    
+    const[carts, setCarts] = useState([]);
+    const[wishList, setWishList] = useState([]);
+
+    const wishLength = wishList?.length;
+    const cartLength = carts?.items?.length;
 
     useEffect(() => {
         loadCarts();
+        loadWishList();
     }, []);
 
-    const loadCarts = async (req, res) => {
+    const loadCarts = async () => {
         try {
-          const { data } = await axios.get("/carts");
+          const token = localStorage.getItem('token'); // get the token from local storage
+          const { data } = await axios.get("/carts", { headers: { Authorization: token } });
           setCarts(data);
-          console.log("CART",data);
+        } catch (err) {
+          console.log(err);
+        }
+    };
+    const loadWishList = async () => {
+        try {
+          const token = localStorage.getItem('token'); // get the token from local storage
+          const { data } = await axios.get("/wishlists", { headers: { Authorization: token } });
+          setWishList(data.wishlist);
         } catch (err) {
           console.log(err);
         }
@@ -40,7 +52,7 @@ const TopNav = () => {
                         <li>
                             <Badge 
                                 className='fs-6 pt-1'
-                                count="2"
+                                count={wishLength}
                                 offset={[-10, 5]}
                                 size="small"
                                 showZero={true}

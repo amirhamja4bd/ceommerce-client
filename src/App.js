@@ -29,6 +29,9 @@ import { FloatButton } from 'antd';
 import ProductView from './pages/ProductView';
 import Shop from './pages/Shop';
 import Cart from './pages/Cart';
+import Shopping from './pages/Shopping';
+import CategoryView from './pages/CategoryView';
+import WishList from './pages/WishList';
 
 function App() {
   const [auth , setAuth] = useAuth();
@@ -42,8 +45,11 @@ function App() {
         <Routes>
           <Route path='/' element={<Home/>} />
           <Route path='/shop' element={<Shop/>} />
+          <Route path='/shopping' element={<Shopping/>} />
           <Route path='/categories' element={<Categories/>} />
+          <Route path='/category/:slug' element={<CategoryView/>} />
           <Route path='/cart' element={<Cart/>} />
+          <Route path='/wish' element={<WishList/>} />
           <Route path='/product/:slug' element={<ProductView/>} />
           <Route path='/login' element={<Login/>} />
           <Route path='/register' element={<Register/>} />

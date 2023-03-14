@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Badge } from 'antd';
 import TopNav from './TopNav';
+import axios from 'axios';
 
 
 const image ="https://raw.githubusercontent.com/amirhamja4bd/portfolio/main/images/ZayanShop.png"
@@ -15,13 +16,33 @@ const image1 ="../../assets/img/ZayanShop.png"
 const image2 ="https://images.rawpixel.com/image_400/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm0zMjgtMzY2LXRvbmctMDhfMS5qcGc.jpg"
 
 const MasterLayout = () => {
-    const [auth, setAuth ] = useAuth();
+    const [auth, setAuth , token, setToken] = useAuth();
     const [top, setTop] = useState(0);
+    const[carts, setCarts] = useState([]);
+
+    const cartLength = carts?.items?.length;
+
      const navigate = useNavigate();
+
+    useEffect(() => {
+        loadCarts();
+    }, []);
+
+    const loadCarts = async () => {
+        try {
+          const token = localStorage.getItem('token'); // get the token from local storage
+          const { data } = await axios.get("/carts", { headers: { Authorization: token } });
+          setCarts(data);
+        } catch (err) {
+          console.log(err);
+        }
+    };
 
     const logout = () => {
         setAuth({ ...auth, user: null, token: "" })
+        setToken({ token: "" })
         localStorage.removeItem("auth")
+        localStorage.removeItem("token")
         navigate("/login")
     }
 
@@ -48,8 +69,8 @@ const MasterLayout = () => {
                             </NavLink>
                             </li>
                             <li className="nav-item">
-                            <NavLink className="nav-link " aria-current="page" to="/cart">
-                                CART
+                            <NavLink className="nav-link " aria-current="page" to="/shopping">
+                                SHOPPING
                             </NavLink>
                             </li>
                             <li className="nav-item">
@@ -57,10 +78,23 @@ const MasterLayout = () => {
                                 CATEGORIES
                             </NavLink>
                             </li>
-                            <li className="nav-item">
+                            {/* <li className="nav-item">
                             <NavLink className="nav-link " aria-current="page" to="/checkout">
                                 CHECKOUT
                             </NavLink>
+                            </li> */}
+                            <li className="nav-item me-2 " style={{marginTop: "-4px"}}>
+                            <Badge 
+                                className='fs-6 pt-1'
+                                count={cartLength}
+                                offset={[-3, 15]}
+                                size="small"
+                                showZero={true}
+                            >
+                            <NavLink className="nav-link" aria-current="page" to="/cart">
+                                CART
+                            </NavLink>
+                            </Badge>
                             </li>
                             
                             <form className="navbar-form" role="search">

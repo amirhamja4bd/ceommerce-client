@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import React, { Fragment } from 'react';
+import '../assets/css/progress.css';
 
 const Loading = ({ path = "login" })=> {
 
@@ -21,17 +23,13 @@ const Loading = ({ path = "login" })=> {
   }, [count]);
 
   return (
-    <div className=""></div>
-    // <div
-    //   className="d-flex justify-content-center align-items-center"
-    //   style={{ height: "100vh" }}
-    // >
-    //   <div class="text-center">
-    //     <div class="spinner-border text-primary p-3" role="status">
-    //         <span class="visually-hidden">Loading...</span>
-    //     </div>
-    //   </div>
-    // </div>
+    <Fragment>
+        <div className="LoadingOverlay">
+            <div className="Line-Progress">
+                <div className="indeterminate"></div>
+            </div>
+        </div>
+    </Fragment>
   );
 }
 

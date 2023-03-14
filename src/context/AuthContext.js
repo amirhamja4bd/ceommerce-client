@@ -19,7 +19,6 @@ const AuthProvider = ({children}) => {
         setToken(getToken);
         if(data){
             const parsed = JSON.parse(data);
-            console.log(parsed.token)
             setAuth({ ...auth, user: parsed.user, token: parsed.token});
             
         }

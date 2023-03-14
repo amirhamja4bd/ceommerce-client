@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import ProductCard from '../components/card/ProductCard';
-import ProductCard2 from '../components/card/ProductCard2';
+import { NavLink } from 'react-router-dom';
 import "../assets/css/carousel.css";
 
 const Home = () => {
@@ -80,10 +80,12 @@ const Home = () => {
                 <div className="row">
                     <div className="col-md-3">
                         <div className="card">
-                            <div className="card-header fw-bold"><i class="fa-solid fa-list"></i> Categories</div>
+                            <NavLink className=" card-header nav-link primary-bg text-light" aria-current="page" to="/categories">
+                            <i class="fa-solid fa-list"></i> Categories
+                            </NavLink>
                             <div className="card-body overflow-auto cat-scroll" style={{maxHeight:"290px"}}>
                                 {category?.map((c)=>(
-                                    <p key={c?._id}>{c?.name}</p>
+                                    <NavLink className="nav-link" to={`/category/${c?.slug}`}><p>{c?.name}</p></NavLink>
                                 ))}
                             </div>
                         </div>
@@ -116,9 +118,9 @@ const Home = () => {
                         <button className="pre-btn" onClick={btnprev}><i className="fa-solid fa-chevron-left  text-white fs-1 py-1 px-2 rounded"></i></button>
                         <button className="next-btn" onClick={btnnext}><i className="fa-solid fa-chevron-right text-white fs-1 py-1 px-2 rounded"></i></button>
 
-                        <div className="new-product pb-5 ">
+                        <div className="new-product pb-5 mx-2 ">
                             {products?.map((p)=>(
-                                <div key={p._id} className="">
+                                <div key={p._id} className="col-md-3 ">
                                     <ProductCard p={p} />
                                 </div>
                             ))}
@@ -134,7 +136,7 @@ const Home = () => {
 
                         <div className="bestSellProduct pb-5 ">
                             {sortedBySold?.map((p)=>(
-                                <div key={p._id} className="">
+                                <div key={p._id} className="col-md-3">
                                     <ProductCard p={p} />
                                 </div>
                             ))}

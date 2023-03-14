@@ -103,7 +103,7 @@ const Products = () => {
                                         {p?.status == "Draft" ? <td><p className='badge rounded-pill bg-danger '>{p?.status}</p></td> : <td><p className='badge rounded-pill bg-success'>{p?.status}</p></td> }
                                         <td>
                                             <div className="btn-group">
-                                                <Link key={p._id} to={`/dashboard/admin/product/${p.slug}`}>
+                                                <Link key={p._id} to={`/product/${p.slug}`}>
                                                     <button className='btn btn-sm btn-info  ms-1' style={{borderRadius:"50%"}}><i class="fa-solid fa-eye"></i></button>
                                                 </Link>
                                                 <Link key={p._id} to={`/dashboard/admin/product/update/${p.slug}`}>

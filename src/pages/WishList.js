@@ -5,69 +5,65 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './cart.css'
 
-const Cart = () => {
+const WishList = () => {
 
     const[carts, setCarts] = useState([]);
     const [auth, setAuth ] = useAuth();
+    const[wishList, setWishList] = useState([]);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        loadCarts();
+        loadWishList();
     }, []);
 
-    // const loadCarts = async (req, res) => {
-    //     try {
-    //       const { data } = await axios.get("/carts");
-    //       setCarts(data);
-    //       console.log("CART",data);
-    //     } catch (err) {
-    //       console.log(err);
-    //     }
-    // };
-
-    const loadCarts = async () => {
+    const loadWishList = async () => {
         try {
           const token = localStorage.getItem('token'); // get the token from local storage
-          const { data } = await axios.get("/carts", { headers: { Authorization: token } });
-          setCarts(data);
-          console.log("CART",data);
+          const { data } = await axios.get("/wishlists", { headers: { Authorization: token } });
+          setWishList(data.wishlist);
         } catch (err) {
           console.log(err);
         }
     };
 
-    const handleDelete = async (items)=>{
+    const addToCart = async (items) => {
         try {
-        const deleteCart = await axios.delete(`/cart/${items._id}`);
-        toast.success(" Delete cart successfully")
-        loadCarts();
+          const {data} = await axios.post('/cart', { productId: items?._id, quantity:1 });
+          const productId = items?._id
+          const itemIndex = data.items.findIndex(item => item.product === productId);
+          if (itemIndex !== -1) {
+            const countQuantity = data.items[itemIndex].quantity;
+            toast.success(`${countQuantity} Item Add to Cart Successfully`);
+          }
         }
         catch (error) {
-        toast.error(error)
-        console.error(error);
+          console.error(error);
+          toast.error('Could not add item to cart');
         }
-    }
-
+      };
+      
     
-
-    const updateQuantity = async (quantity, itemId)=>{
+    const handleDelete = async (items) => {
         try {
-        const updateQuant = await axios.put(`/cart`, { itemId , quantity });
-        toast.success(" Update cart successfully")
-        loadCarts();
+          const token = localStorage.getItem('token');
+          await axios.delete(`/wishlist/${items?.product?._id}`, {
+            headers: { Authorization: token },
+          });
+          const updatedWishList = wishList.filter((item) => item._id !== items?.product?._id);
+          setWishList(updatedWishList);
+          toast.success('Item deleted successfully');
+        } catch (error) {
+          console.error(error);
+          toast.error('Could not delete item from wishlist');
         }
-        catch (error) {
-        toast.error(error)
-        console.error(error);
-        }
-    }
-
+      };
     
+
     return (
         <div className=' overflow-hidden'>
             <div className="my-4 bg-light py-2 text-center ">
-                {carts?.items?.length ? ( <h4>Hey, {auth?.user?.fullName} You have {carts?.items?.length} Items Add to Cart</h4>) : (
+                {wishList.length ? ( <h4>Hey, {auth?.user?.fullName} You have {wishList.length} Items Add to Wish List</h4>) : (
                     <div className="text-center">
                         <button 
                             onClick={()=> navigate("/")}
@@ -75,7 +71,7 @@ const Cart = () => {
                     </div>
                 )}
             </div>
-            {carts?.items?.length > 0 && (
+            {wishList.length > 0 && (
             <div class="container-fluid mx-5">
                 <div className="row">
                     <div className=" border col-md-9">
@@ -87,13 +83,11 @@ const Cart = () => {
                                 <th scope="col">Product</th>
                                 <th scope="col"></th>
                                 <th scope="col">Price</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col">Total</th>
-                                <th scope="col">Delete</th>
+                                <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {carts?.items?.map((items, i)=>(
+                                {wishList?.map((items , i)=>(
                                 <tr className='align-middle'>
                                     <th scope="row">{i+1}</th>
                                     <td>
@@ -105,26 +99,11 @@ const Cart = () => {
                                     />
                                     </td>
                                     <td className='pb-0 ms-0'> <p>{items?.product?.title}</p></td>
-                                    <td>{items?.price.toLocaleString("en-US",{style:"currency", currency:"USD"})} </td>
-                                    {/* <td>{items?.quantity} </td> */}
-                                    <td>
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        style={{
-                                            width: "100px",
-                                        }}
-                                        defaultValue={ items?.quantity ? items?.quantity : 1 }
-                                        min="1"
-                                        max="12"
-                                        onChange={(e) => updateQuantity( e.target.value , items?._id) }
-                                    />
-                                    </td>
-
-                                    <td>{(items?.price * items?.quantity).toLocaleString("en-US",{style:"currency", currency:"USD"})} </td>
+                                    <td>{items?.product?.price.toLocaleString("en-US",{style:"currency", currency:"USD"})} </td>  
                                     <td>
                                         <div className="btn-group">
-                                            <button key={items?._id}  onClick={handleDelete.bind(this, items)} className='btn btn-sm btn-danger bg-opacity-25 ms-1' style={{borderRadius:"50%"}}><i class="fa-regular fa-trash-can"></i></button>
+                                            <button key={items?.product?._id}  onClick={addToCart.bind(this, items?.product)} className='primary-bg btn bg-opacity-25 p-2 text-white ' style={{borderRadius:"50%", height:"40px", width:"40px"}}><i class="fa fa-shopping-cart"></i></button>
+                                            <button key={items?.product?._id}  onClick={handleDelete.bind(this, items)} className='btn-danger btn bg-opacity-25 ms-1' style={{borderRadius:"50%"}}><i class="fa-regular fa-trash-can"></i></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -133,12 +112,12 @@ const Cart = () => {
                         </table>
                         </div>
                     </div>
-                    <div className="col-md-3">
+                    {/* <div className="col-md-3">
                         <div className="">
                             <h4>Sub Total: {carts?.total.toLocaleString("en-US",{style:"currency", currency:"USD"})}</h4>
                         </div>
                         
-                    </div>
+                    </div> */}
                 </div>
             </div>
             )}
@@ -146,4 +125,4 @@ const Cart = () => {
     );
 };
 
-export default Cart;
+export default WishList;
