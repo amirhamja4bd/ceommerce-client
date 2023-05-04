@@ -1,0 +1,35 @@
+
+.input-range__slider{
+    background: #15BE7B!important;
+    border: 1px solid #15BE7B!important;
+}
+.input-range__track--active{
+    background: #15BE7B!important;
+}
+option{
+    height: 20px;
+    width: 20px;
+    padding: 20px!important;
+}
+/* set the font size and background color of the select box */
+select {
+    font-size: 16px;
+    background-color: #f2f2f2;
+    border: none;
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 4px;
+  }
+  
+  /* change the background color of the selected option */
+  option:checked {
+    background-color: #4f8cff;
+    color: rgb(255, 255, 255);
+  }
+  
+  /* change the background color of the option on hover */
+  option:nth-child(2):hover {
+    background-color: #c50000!important;
+    cursor: pointer;
+  }
