@@ -5,7 +5,8 @@
 }
 
 .new-product,
-.bestSellProduct {
+.bestSellProduct,
+.bestReviewProduct {
     padding: 0 0;
     display: flex;
     overflow-x: hidden;

@@ -11,7 +11,7 @@ import TopNav from './TopNav';
 import axios from 'axios';
 import { useSearch } from '../../context/SearchContext';
 import '../../assets/css/style.css'
-
+import { Buffer } from 'buffer';
 
 const image ="https://raw.githubusercontent.com/amirhamja4bd/portfolio/main/images/ZayanShop.png"
 const image1 ="../../assets/img/ZayanShop.png"
@@ -61,6 +61,8 @@ const MasterLayout = () => {
             console.log(err);
         }
     };
+
+    const photoData = auth?.user?.photo?.data || '';
 
     return (
         <div>
@@ -149,7 +151,13 @@ const MasterLayout = () => {
                             ) :(
                             <div class="dropdown-center ms-2">
                                 <button class="main-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                   <img className='profile-img' src={auth?.user?.photo || image2} alt=""/> {auth?.user?.fullName}
+                                <img
+                                    className="profile-img me-2"
+                                    src={`data:${auth?.user?.photo?.contentType};base64,${Buffer.from(photoData).toString("base64")}`}
+                                    alt=""
+                                    style={{ width: "30px", height: "30px" }}
+                                />
+                                    {auth?.user?.fullName}
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li className="nav-item">

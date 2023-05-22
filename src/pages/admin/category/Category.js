@@ -13,6 +13,7 @@ const Category = () => {
     const [name, setName] = useState("");
     const [category, setCategory] = useState([]);
 
+    console.log("photo Cat", photo)
     const navigate = useNavigate();
 
 

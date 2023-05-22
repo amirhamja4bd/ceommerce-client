@@ -4,18 +4,21 @@ import ProductCard from '../components/card/ProductCard';
 import { NavLink } from 'react-router-dom';
 import "../assets/css/carousel.css";
 import DiscountBanner from '../components/nav/DiscountBanner';
+import { useAuth } from '../context/AuthContext';
 
 const Home = () => {
 
     const [products, setProducts ] = useState([]);
     const [category, setCategory] = useState([]);
-
+    const [reviews, setReviews] = useState([]);
+    const [auth, setAuth ] = useAuth();
     let loader = useRef();
 
     useEffect(() => {
         loadProducts();
         loadCategories();
-    },[])
+        loadReviews();
+    },[auth])
 
 
     // category Load
@@ -42,10 +45,22 @@ const Home = () => {
             console.log(error);
         }
     };
+    const loadReviews = async () => {
+        try{
+            // loader.classList.remove("d-none")
+            const {data} = await axios.get('/reviews',{ headers: { Authorization: auth?.token } });
+            setReviews(data.reviews);
+            // loader.classList.add("d-none")
+        }
+        catch(error){
+            console.log(error);
+        }
+    };
 
     // Carousel
     let newP = document.querySelector('.new-product');
     let sell = document.querySelector('.bestSellProduct');
+    let review = document.querySelector('.bestReviewProduct');
 
     const btnprev = () => {
         let width = newP.clientWidth;
@@ -64,12 +79,23 @@ const Home = () => {
         sell.scrollLeft = sell.scrollLeft - width;
         console.log(width)
     }
-
     const sellbtnnext = () => {
         let width = sell.clientWidth;
         sell.scrollLeft = sell.scrollLeft + width;
         console.log(width)
     }
+    const reviewbtnprev = () => {
+        let width = review.clientWidth;
+        review.scrollLeft = review.scrollLeft - width;
+        console.log(width)
+    }
+    const reviewbtnnext = () => {
+        let width = review.clientWidth;
+        review.scrollLeft = review.scrollLeft + width;
+        console.log(width)
+    }
+
+    
 
     //Best selling products
     const sortedProduct = [...products];
@@ -136,9 +162,25 @@ const Home = () => {
                         <button className="next-btn" onClick={sellbtnnext}><i className="fa-solid fa-chevron-right text-white fs-1 py-1 px-2 rounded"></i></button>
 
                         <div className="bestSellProduct pb-5 ">
-                            {sortedBySold?.map((p)=>(
+                            {sortedBySold?.slice(0, 15)?.map((p)=>(
                                 <div key={p._id} className="col-md-3">
                                     <ProductCard p={p} />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+                <section >
+                    <div className="product-carousel container mx-auto  bg-light shadow-sm my-3">
+                        <h4 className="mt-1 ms-1 p-2 "> Best Reviewed Products </h4>
+
+                        <button className="pre-btn" onClick={reviewbtnprev}><i className="fa-solid fa-chevron-left text-white fs-1 py-1 px-2 rounded"></i></button>
+                        <button className="next-btn" onClick={reviewbtnnext}><i className="fa-solid fa-chevron-right text-white fs-1 py-1 px-2 rounded"></i></button>
+
+                        <div className="bestReviewProduct pb-5 ">
+                            {reviews?.map((p)=>(
+                                <div key={p._id} className="col-md-3">
+                                    <ProductCard p={p?.product} />
                                 </div>
                             ))}
                         </div>

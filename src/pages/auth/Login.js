@@ -17,7 +17,7 @@ const Login = () => {
         try{
             const { data } = await axios.post('/login', { email, password,})
             if(data?.error){
-                toast.error('Login Failed',data.error)
+                toast.error(data.error)
             }
             else{
                 localStorage.setItem("auth", JSON.stringify(data));

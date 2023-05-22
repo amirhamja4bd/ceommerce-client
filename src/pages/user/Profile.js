@@ -9,13 +9,15 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import UserAddress from './Address';
 import axios from 'axios';
+import { Buffer } from 'buffer';
 
 const Profile = () => {
     const [firstName, setFirstName ] = useState('');
     const [lastName, setLastName ] = useState('');
     const [email, setEmail ] = useState('');
     const [phone, setPhone ] = useState('');
-    const [password, setPassword ] = useState('');
+    const [newPassword, setNewPassword ] = useState('');
+    const [oldPassword, setOldPassword ] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [photo, setPhoto ] = useState('');
 
@@ -36,23 +38,21 @@ const Profile = () => {
             setPhone(phone);
             setEmail(email);
             setAddress(address);
-            setPhoto(photo);
         }
-            loadAddress()
     },[auth?.user]);
         
-            const loadAddress = async () => {
-                try {
-                  const { data } = await axios.get("/address", { headers: { Authorization: auth?.token } });
-                  setAddress(data.address);
-                  setCity(data.city);
-                  setState(data.state);
-                  setCountry(data.country);
-                  setZipCode(data.zipCode);
-                } catch (err) {
-                  console.log(err);
-                }
-            };
+            // const loadAddress = async () => {
+            //     try {
+            //       const { data } = await axios.get("/address", { headers: { Authorization: auth?.token } });
+            //       setAddress(data.address);
+            //       setCity(data.city);
+            //       setState(data.state);
+            //       setCountry(data.country);
+            //       setZipCode(data.zipCode);
+            //     } catch (err) {
+            //       console.log(err);
+            //     }
+            // };
 
 
     const handleUpdate = async (e) =>{
@@ -77,6 +77,7 @@ const Profile = () => {
                 lStorage.user = data;
                 localStorage.setItem('auth', JSON.stringify(lStorage));
                 toast.success("Profile Updated")
+                setPhoto('')
                 navigate('/dashboard/user/profile');
             }
         }catch(error){
@@ -85,24 +86,30 @@ const Profile = () => {
     }
     const handlePassChange = async (e) => {
         e.preventDefault();
-        if (password.length < 6) {
+        if (newPassword.length < 6) {
           toast.error("Password must be at least 6 characters long");
           return;
         }
-        if (password !== confirmPassword) {
+        if (newPassword !== confirmPassword) {
           toast.error("Passwords do not match");
           return;
         }
+        if (!oldPassword) {
+            toast.error("Please enter your old password");
+            return;
+          }
         try {
           const profileData = new FormData();
-          profileData.append("password", password);
+          profileData.append("oldPassword", oldPassword);
+          profileData.append("newPassword", newPassword);
       
           const { data } = await axios.put("/password", profileData);
           if (data?.error) {
             toast.error(data.error);
           } else {
             toast.success("Password Updated");
-            setPassword('');
+            setOldPassword('');
+            setNewPassword('');
             setConfirmPassword('');
             navigate("/dashboard/user/profile");
           }
@@ -110,6 +117,8 @@ const Profile = () => {
           toast.error("Profile Update Failed");
         }
       };
+
+      const photoData = auth?.user?.photo?.data || '';
 
     return (
         <div>
@@ -120,38 +129,39 @@ const Profile = () => {
                         <div className="mx-3">
                             <h3 className='py-4'>Personal Details</h3>
                             <div className="text-center">
-                                <img className="icon-nav-img-lg" src={auth?.user?.photo} alt={auth?.user?.fullName}/>
-                                {/* {photo && (
-                                        <div className='text-center'>
-                                            <img 
-                                                src={URL.createObjectURL(photo)} 
-                                                alt="Product Photo"
-                                                className="img img-responsive rounded "
-                                                height="150px"
-                                            />
-                                                
-                                        </div>
-                                    )} */}
-                                    
-                                    {/* Photo Upload */}
-                                    {/* <div className='pt-2'>
-                                        <label className='secondary-btn text-center col-12 mb-3'>
-
-                                            {photo ? photo.name : "Upload photo"}
-                                            
-                                            <input
-                                                type="file"
-                                                name="photo"
-                                                accept="image/*"
-                                                onChange={(e)=> setPhoto(e.target.files[0])}
-                                                hidden
-                                            ></input>
-                                        </label>
-                                    </div> */}
+                                <img
+                                className="icon-nav-img-lg "
+                                src={`data:${auth?.user?.photo?.contentType};base64,${Buffer.from(photoData).toString("base64")}`}
+                                alt=""
+                                style={{ width: "120px", height: "120px" , objectFit: 'cover' }}
+                                />
                             </div>
-                            <div className=" p-2">
-                                <label>Profile Picture</label>
-                                <input onChange={(e) => setPhoto(e.target.files[0])}  placeholder="User Email" className="form-control bg-light" type="file"/>
+                            {photo && (
+                                <div className='text-center'>
+                                    <img 
+                                        src={URL.createObjectURL(photo)} 
+                                        alt="Product Photo"
+                                        className="img img-responsive rounded-circle "
+                                        style={{ width: "120px", height: "120px" , objectFit: 'cover' }}
+                                    />
+                                        
+                                </div>
+                            )}
+                            
+                            {/* Otherwise Photo Upload */}
+                            <div className=' pt-2 mx-2'>
+                                <label className='form-control bg-light pointer w-100 mb-2 text-center'>
+
+                                    {photo ? photo.name : "Upload photo"}
+                                    
+                                    <input
+                                        type="file"
+                                        name="photo"
+                                        accept="image/*"
+                                        onChange={(e)=> setPhoto(e.target.files[0])}
+                                        hidden
+                                    ></input>
+                                </label>
                             </div>
                             <div className=" p-2">
                                 <label>First Name</label>
@@ -203,14 +213,24 @@ const Profile = () => {
                     <div className="w-50  mx-auto d-block">
                         <Lottie animationData={pass} loop={true} />
                     </div>
-                    <div className="p-2">
-                            <label>Password</label>
+                        <div className="p-2">
+                            <label>Old Password</label>
+                            <input
+                                placeholder="Old Password"
+                                className="form-control bg-light"
+                                type="password"
+                                value={oldPassword}
+                                onChange={(e) => setOldPassword(e.target.value)}
+                            />
+                        </div>
+                        <div className="p-2">
+                            <label> New Password</label>
                             <input  
-                                placeholder="Password" 
+                                placeholder="New Password" 
                                 className="form-control bg-light" 
                                 type="password"
-                                value={password}
-                                onChange={(e)=> setPassword(e.target.value)}
+                                value={newPassword}
+                                onChange={(e)=> setNewPassword(e.target.value)}
                             />
                         </div>
                         <div className="p-2">

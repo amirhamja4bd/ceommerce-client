@@ -17,7 +17,8 @@ const OrderCard = ({i, o, p , remove = true}) => {
         if (auth?.token) getOrders();
     }, [auth?.token]);
 
-    console.log("p",o)
+    // console.log("p",p)
+    // console.log("o",o)
 
     const navigate = useNavigate();
 
@@ -48,7 +49,7 @@ const OrderCard = ({i, o, p , remove = true}) => {
     return (
         <>
         <table>
-            <thead>
+        <thead className=''>
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Product</th>
@@ -57,7 +58,7 @@ const OrderCard = ({i, o, p , remove = true}) => {
                 <th scope="col"  className=''>Quantity</th>
                 <th scope="col"></th>
             </tr>
-            </thead>
+        </thead>
         <tbody>               
             <tr className='align-middle'>
                 <th scope="row">{i+1}</th>

@@ -76,7 +76,7 @@ const Product = () => {
                 toast.error(data.error);
             }
             else{
-                toast.success(`'${data.name}' is created successfully`);
+                toast.success(`'${data.title}' is created successfully`);
                 navigate('/dashboard/admin/products');
             }
         }
@@ -96,7 +96,7 @@ const Product = () => {
             <div className=" overflow-hidden ms-4 me-3">
                 <div className="row">
                     <div className="col-md-9">
-                        <div class="container w-100 mt-5">
+                        <div class="container w-100 mt-5 mb-5">
                             <form onSubmit={handleSubmit} >
                                 {/*  Photo Show */}
                                 {photo && (

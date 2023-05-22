@@ -226,7 +226,7 @@ const Product = () => {
                                     min="0" />
                                 </div>
                                 <div className="my-2">
-                                    <button type="submit" class="secondary-btn">Create Product</button>
+                                    <button type="submit" class="secondary-btn">Update</button>
                                 </div>
                             </form>
                         </div>

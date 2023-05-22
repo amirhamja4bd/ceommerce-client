@@ -12,7 +12,7 @@ const Orders = () => {
     const [auth, setAuth] = useAuth();
     const [orders, setOrders] = useState([]);
     const [status, setStatus] = useState([
-        "Not processed",
+        "pending",
         "Processing",
         "Shipped",
         "Delivered",

@@ -40,13 +40,13 @@ const UserOrders = () => {
                             return (
                                 <div
                                 key={o._id}
-                                className="border shadow-sm bg-light rounded-4 mb-5"
+                                className=" shadow bg-light rounded-4 mb-5"
                                 >
                                     
                                     <table className="table">
                                         <thead>
                                         <tr>
-                                            <th scope="col">#</th>
+                                            <th scope="col">SN</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Buyer</th>
                                             <th scope="col">Ordered</th>
@@ -65,10 +65,10 @@ const UserOrders = () => {
                                         </tr>
                                         </tbody>
                                     </table>
-                                    <div className="container">
+                                    <div className="">
                                         <div className="row m-2">
                                             {o?.products?.map((p, i) => (
-                                                <OrderCard  key={i} p={p} o={o} remove={false} />
+                                                <OrderCard  i={i} p={p} o={o} remove={false} />
                                             ))}
                                         </div>
                                     </div>

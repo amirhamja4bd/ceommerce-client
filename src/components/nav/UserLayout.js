@@ -6,6 +6,7 @@ import '../../assets/css/dropdownmenu.css'
 import {  BsBoxArrowLeft, BsCartCheck } from "react-icons/bs";
 import { useAuth } from "../../context/AuthContext";
 import Accordion from 'react-bootstrap/Accordion';
+import { Buffer } from 'buffer';
 const image ="https://raw.githubusercontent.com/amirhamja4bd/portfolio/main/images/ZayanShop.png"
 
 const UserLayout = (props) => {
@@ -42,6 +43,7 @@ const UserLayout = (props) => {
         navigate("/login")
     }
 
+    const photoData = auth?.user?.photo?.data || '';
 
 
     return (
@@ -60,11 +62,23 @@ const UserLayout = (props) => {
                     <div className="float-right h-auto d-flex ">
                         <div className="user-dropdown ">
                             <div className="d-flex my-bg-primary px-1 pt-1" style={{borderRadius:"40px"}}>
-                                <p className="align-middle pe-2 text-light pt-2 text-dark" ><img className='profile-img me-2' src={auth?.user?.photo} alt="" style={{width:"25px", height:"25px"}}/>{auth?.user?.fullName}</p>
+                                <p className="align-middle pe-2 text-light pt-2 text-dark" >
+                                <img
+                                    className="profile-img me-2"
+                                    src={`data:${auth?.user?.photo?.contentType};base64,${Buffer.from(photoData).toString("base64")}`}
+                                    alt=""
+                                    style={{ width: "30px", height: "30px", objectFit: 'cover' }}
+                                />
+                                    {auth?.user?.fullName}</p>
                             </div>
                             <div className="user-dropdown-content shadow ">
                                 <div className="mt-4 text-center">
-                                    <img className='profile-img' src={auth?.user?.photo} alt="" style={{width:"30px", height:"30px"}}/>
+                                <img
+                                    className="profile-img"
+                                    src={`data:${auth?.user?.photo?.contentType};base64,${Buffer.from(photoData).toString("base64")}`}
+                                    alt=""
+                                    style={{ width: "30px", height: "30px", objectFit: 'cover' }}
+                                />
                                     {/* <i class="fa-solid fa-face-grin-tongue-squint"></i> */}
                                     <h6 className="mt-2">{auth?.user?.fullName}</h6>
                                     <hr className="user-dropdown-divider  p-0"/>
