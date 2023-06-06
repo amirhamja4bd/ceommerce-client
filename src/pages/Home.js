@@ -13,11 +13,13 @@ const Home = () => {
     const [reviews, setReviews] = useState([]);
     const [auth, setAuth ] = useAuth();
     let loader = useRef();
+    // console.log('review',reviews);
 
     useEffect(() => {
         loadProducts();
         loadCategories();
-        loadReviews();
+        // loadReviews();
+        loadReviewsProducts();
     },[auth])
 
 
@@ -45,17 +47,28 @@ const Home = () => {
             console.log(error);
         }
     };
-    const loadReviews = async () => {
+    const loadReviewsProducts = async () => {
         try{
             // loader.classList.remove("d-none")
-            const {data} = await axios.get('/reviews',{ headers: { Authorization: auth?.token } });
-            setReviews(data.reviews);
+            const {data} = await axios.get('/products/reviews');
+            setReviews(data);
             // loader.classList.add("d-none")
         }
         catch(error){
             console.log(error);
         }
     };
+    // const loadReviews = async () => {
+    //     try{
+    //         // loader.classList.remove("d-none")
+    //         const {data} = await axios.get('/reviews',{ headers: { Authorization: auth?.token } });
+    //         setReviews(data.products);
+    //         // loader.classList.add("d-none")
+    //     }
+    //     catch(error){
+    //         console.log(error);
+    //     }
+    // };
 
     // Carousel
     let newP = document.querySelector('.new-product');
@@ -180,7 +193,7 @@ const Home = () => {
                         <div className="bestReviewProduct pb-5 ">
                             {reviews?.map((p)=>(
                                 <div key={p._id} className="col-md-3">
-                                    <ProductCard p={p?.product} />
+                                    <ProductCard p={p} />
                                 </div>
                             ))}
                         </div>

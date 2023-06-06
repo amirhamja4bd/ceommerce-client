@@ -8,6 +8,7 @@ import FullscreenLoader from '../../../components/nav/FullscreenLoader';
 import { useAuth } from '../../../context/AuthContext';
 import Lottie from "lottie-react";
 import shopping from '../../../assets/img/cube.json'
+import Editor from "../../../helper/Editor";
 
 const Product = () => {
     const [auth, setAuth] = useAuth()
@@ -157,14 +158,14 @@ const Product = () => {
                                     />
                                 </div>
                                 <div class="form-group">
-                                    
-                                    <textarea 
+                                <Editor content={description} setContent={setDescription} />
+                                    {/* <textarea 
                                     class="form-control my-2" 
                                     placeholder='Description' 
                                     id="product-description" rows="3"
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
-                                    ></textarea>
+                                    ></textarea> */}
                                 </div>
 
                                 <Select

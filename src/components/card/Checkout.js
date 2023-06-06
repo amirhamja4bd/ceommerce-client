@@ -17,7 +17,7 @@ const Checkout = () => {
     const [loading, setLoading] = useState(false);
     const [address, setAddress ] = useState('');
     
-    const shippingFee = 20
+    const shippingFee = 0
 
     useEffect(() => {
         if(auth?.token){

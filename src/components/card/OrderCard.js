@@ -9,16 +9,13 @@ import { toast } from 'react-hot-toast';
 
 const OrderCard = ({i, o, p , remove = true}) => {
 
-    
+    // console.log('OrderCard', p)
     const [auth, setAuth] = useAuth();
     const [orders, setOrders] = useState([]);
 
     useEffect(() => {
         if (auth?.token) getOrders();
     }, [auth?.token]);
-
-    // console.log("p",p)
-    // console.log("o",o)
 
     const navigate = useNavigate();
 
@@ -51,28 +48,29 @@ const OrderCard = ({i, o, p , remove = true}) => {
         <table>
         <thead className=''>
             <tr>
-                <th scope="col">#</th>
+                <th scope="col">No</th>
                 <th scope="col">Product</th>
-                <th scope="col"></th>
                 <th scope="col">Price</th>
                 <th scope="col"  className=''>Quantity</th>
-                <th scope="col"></th>
+                {remove &&
+                <th scope="col">Remove</th>
+                }
             </tr>
         </thead>
         <tbody>               
             <tr className='align-middle'>
                 <th scope="row">{i+1}</th>
-                <td>
+                <td className='d-flex align-items-center'>
                 <img
-                    src={`${process.env.REACT_APP_API}/product/photo/${p?._id}`}
+                    src={`${process.env.REACT_APP_API}/product/photo/${p?.product?._id}`}
                     alt={""}
-                    className="img img-fluid rounded"
+                    className="img img-fluid rounded my-2"
                     style={{ height: "90px", width:"90px", objectFit: "cover"}}
                 />
+                <td className='pb-0 ms-3'> <p>{p?.product?.title}</p></td>
                 </td>
-                <td className='pb-0 ms-0'> <p>{o?.title}</p></td>
                 <td>{o?.total.toLocaleString("en-US",{style:"currency", currency:"USD"})} </td>
-                <td>{o?.products?.length} </td>
+                <td className='px-4'>{o?.products?.length} </td>
                 {remove && (
                 <td>
                     <div className="btn-group">

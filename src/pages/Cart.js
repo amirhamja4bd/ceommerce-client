@@ -5,19 +5,21 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './cart.css'
 import Checkout from '../components/card/Checkout';
+import { Button, Result } from 'antd';
+import { useGlobalContext } from '../context/GlobalContext';
 
 
 const Cart = () => {
 
     const[carts, setCarts] = useState([]);
     const [auth, setAuth ] = useAuth();
+    const [code, setCode] = React.useState('');
+    const { checkCountCart , checkCountWish } = useGlobalContext();
 
-    // console.log("carts",carts);
-
-    const cart = carts?.total
-    const shipping = 20
-    const coupon = 0
-    const grandTotal = ((cart + shipping) - coupon)
+    const subTotal = carts?.items?.reduce((acc, item) => acc + item.totalPrice, 0);
+    const discount = subTotal - carts?.total
+    const shipping = 0
+    const grandTotal = ((subTotal - discount) + shipping)
 
     const navigate = useNavigate();
 
@@ -30,10 +32,30 @@ const Cart = () => {
           const token = localStorage.getItem('token'); // get the token from local storage
           const { data } = await axios.get("/carts", { headers: { Authorization: token } });
           setCarts(data);
+          checkCountCart()
         } catch (err) {
           console.log(err);
         }
     };
+
+    const handleApplyCoupon = async (e) => {
+        e.preventDefault();
+        try {
+            const token = localStorage.getItem('token');
+          const AuthToken = { headers: { 'Authorization': `Bearer ${token}` } }
+          const {data} = await axios.get(`/coupons/${code}`, { headers: { Authorization: token } })
+          if (data.error) {
+            toast.error(data.error);
+          } else {
+            loadCarts();
+            setCode('')
+            toast.success('Coupon Applied Successfully');
+          }
+        } catch (err) {
+          console.log(err)
+          toast.error(err?.response?.data?.error)
+        }
+      }
 
     const handleDelete = async (items)=>{
         try {
@@ -74,20 +96,32 @@ const Cart = () => {
     
     return (
         <div className=' overflow-hidden'>
-            <div className=" my-4">
+            <div className=" py-4">
                 {!carts?.items?.length &&
-                    <div className="text-center">
-                        <button 
-                            onClick={()=> navigate("/")}
-                            className='secondary-btn'>Continue Shopping</button>
-                    </div>
+                <Result
+                    title="You don't have any items in your cart"
+                    extra={
+                    <a href='shopping' className='main-btn' key="shopping">
+                        Continue Shopping
+                    </a>
+                    }
+                />
+                    // <div className="text-center">
+                    //     <button 
+                    //         onClick={()=> navigate("/")}
+                    //         className='secondary-btn'>Continue Shopping</button>
+                    // </div>
                 }
             </div>
             {carts?.items?.length > 0 && (
             <div class="container">
                 <div className="row">
                     <div className=" rounded border col-md-8 mb-5 p-0 h-100">
-                        <div className="col-md-8 bg-light mb-2 py-2 px-4 w-100">{carts?.items?.length} item's</div>
+                        <div className="d-flex justify-content-between col-md-8 bg-light mb-2 py-2 px-4 w-100">
+                            <p>{carts?.items?.length} items</p>
+                            <p>{carts?.items?.reduce((acc, product) => acc + product.quantity, 0)} Products</p>
+                        </div>
+                        {/* <div className="col-md-8 bg-light mb-2 py-2 px-4 w-100">{carts?.items?.length} item's , {carts?.items?.reduce((acc, product) => acc + product.quantity, 0)} Products</div> */}
                         <div className="row px-3">
                         <table class=" table">
                             <thead>
@@ -165,25 +199,34 @@ const Cart = () => {
                             <div className=" "  style={{color:"#707070"}}>
                                 <div className="d-flex justify-content-between pt-2">
                                     <h6>SubTotal</h6>
-                                    <h6 className=' d-flex justify-content-end'>{cart.toLocaleString("en-US",{style:"currency", currency:"USD"})}</h6>
+                                    <h6 className=' d-flex justify-content-end'>{subTotal.toLocaleString("en-US",{style:"currency", currency:"USD"})}</h6>
                                 </div>
+                                {carts?.couponApplied == true && (<>
+                                <div className="d-flex justify-content-between pt-2">
+                                    <h6>Discount</h6>
+                                    <h6 className=' d-flex justify-content-end text-danger'>-{discount.toLocaleString("en-US",{style:"currency", currency:"USD"})}</h6>
+                                </div>
+                                </>)}
                                 <div className="d-flex justify-content-between pt-2">
                                     <h6>Shipping Fee</h6>
                                     <h6 className=' d-flex justify-content-end'>{shipping.toLocaleString("en-US",{style:"currency", currency:"USD"})}</h6>
                                 </div>
-                                <form onSubmit={"submitReview"} className=" d-flex pt-2">
+                                {carts?.couponApplied == false ? (
+                                <form onSubmit={handleApplyCoupon} className=" d-flex pt-2">
                                     <input  
-                                        onChange={(e)=> "setContent"(e.target.value)}
+                                        value={code}
+                                        onChange={(event) => setCode(event.target.value)}
                                         className='form-control form-control-sm border-0 ps-4'
                                         placeholder='Enter Coupon...'
                                         type="text" 
                                         style={{borderRadius:"40px" , background:"#13aa6e2a"}} 
                                         ></input>
                                     <button 
-                                        type='submit' 
+                                        type='submit'
                                         className='secondary-btn px-3' 
                                         style={{borderRadius:"40px" , marginLeft:"-50px"}}>Apply</button>
                                 </form>
+                                ) : ('') }
                                 <div className="d-flex justify-content-between pt-4 ">
                                     <h6 className='text-black'>Grand Total</h6>
                                     <h6 className=' d-flex justify-content-end primary-text fw-bolder'>{grandTotal.toLocaleString("en-US",{style:"currency", currency:"USD"})}</h6>

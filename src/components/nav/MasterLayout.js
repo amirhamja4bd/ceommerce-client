@@ -12,6 +12,7 @@ import axios from 'axios';
 import { useSearch } from '../../context/SearchContext';
 import '../../assets/css/style.css'
 import { Buffer } from 'buffer';
+import { useGlobalContext } from '../../context/GlobalContext';
 
 const image ="https://raw.githubusercontent.com/amirhamja4bd/portfolio/main/images/ZayanShop.png"
 const image1 ="../../assets/img/ZayanShop.png"
@@ -20,26 +21,13 @@ const image2 ="https://images.rawpixel.com/image_400/czNmcy1wcml2YXRlL3Jhd3BpeGV
 const MasterLayout = () => {
     const [auth, setAuth , token, setToken] = useAuth();
     const [top, setTop] = useState(0);
-    const[carts, setCarts] = useState([]);
     const [search, setSearch] = useSearch();
-
-    const cartLength = carts?.items?.length;
-
+    const { countCart } = useGlobalContext();
      const navigate = useNavigate();
-
+    //  console.log("cartsMaster",carts);
     useEffect(() => {
-        loadCarts();
+        // loadCarts()
     }, []);
-
-    const loadCarts = async () => {
-        try {
-          const token = localStorage.getItem('token'); // get the token from local storage
-          const { data } = await axios.get("/carts", { headers: { Authorization: token } });
-          setCarts(data);
-        } catch (err) {
-          console.log(err);
-        }
-    };
 
     const logout = () => {
         setAuth({ ...auth, user: null, token: "" })
@@ -102,7 +90,7 @@ const MasterLayout = () => {
                                     background: '#2DB77A',
                                   }}
                                 className='fs-6 pt-1'
-                                count={cartLength}
+                                count={countCart}
                                 offset={[-3, 15]}
                                 size="small"
                                 showZero={true}

@@ -4,9 +4,12 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './cart.css'
+import { Button, Result } from 'antd';
+import { useGlobalContext } from '../context/GlobalContext';
 
 const WishList = () => {
 
+  const { checkCountCart , checkCountWish } = useGlobalContext();
     const[carts, setCarts] = useState([]);
     const [auth, setAuth ] = useAuth();
     const[wishList, setWishList] = useState([]);
@@ -35,6 +38,7 @@ const WishList = () => {
           if (itemIndex !== -1) {
             const countQuantity = data.items[itemIndex].quantity;
             toast.success(`${countQuantity} Item Add to Cart Successfully`);
+            checkCountCart()
           }
         }
         catch (error) {
@@ -54,6 +58,7 @@ const WishList = () => {
           setWishList(updatedWishList);
           toast.success('Item deleted successfully');
           loadWishList();
+          checkCountWish()
         } catch (error) {
           console.error(error);
           toast.error('Could not delete item from wishlist');
@@ -63,13 +68,21 @@ const WishList = () => {
 
     return (
         <div className=' overflow-hidden'>
-            <div className="my-4 bg-light py-2 text-center ">
+            <div className=" bg-light py-4 text-center ">
                 {wishList.length ? ( <h4>Hey, {auth?.user?.fullName} You have {wishList.length} Items in Wishlist</h4>) : (
-                    <div className="text-center">
-                        <button 
-                            onClick={()=> navigate("/")}
-                            className='secondary-btn'>Continue Shopping</button>
-                    </div>
+                    <Result
+                    title="You don't have any items in your wishlist"
+                    extra={
+                      <a href='shopping' className='main-btn' key="shopping">
+                        Continue Shopping
+                      </a>
+                    }
+                  />
+                    // <div className="text-center">
+                    //     <button 
+                    //         onClick={()=> navigate("/")}
+                    //         className='secondary-btn'>Continue Shopping</button>
+                    // </div>
                 )}
             </div>
             {wishList.length > 0 && (

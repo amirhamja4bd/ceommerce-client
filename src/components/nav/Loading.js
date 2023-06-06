@@ -15,6 +15,8 @@ const Loading = () => {
     );
 };
 
+export default Loading;
+
 // export default Loading;
 
 // let loader = useRef();

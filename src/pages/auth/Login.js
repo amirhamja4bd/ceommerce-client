@@ -25,7 +25,8 @@ const Login = () => {
                 setAuth({ ...auth, user: data.user, token: data.token });
                 setToken(data.token )
                 toast.success(" Login Successful")
-                navigate( location.state || `/dashboard/${data?.user?.role === 1 ? "admin" : "user"}`);
+                // navigate( location.state || `/dashboard/${data?.user?.role === 1 ? "admin" : "user"}`);
+                navigate( location.state || `${data?.user?.role === 1 ? "/dashboard/admin" : "/"}`);
             }
         }
         catch(error){

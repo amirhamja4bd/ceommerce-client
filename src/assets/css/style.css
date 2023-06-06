@@ -428,3 +428,13 @@ ul {
   border-color: transparent!important;
   background: none!important;
 }
+
+.star {
+  margin: 3px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.star:hover {
+  color: gold;
+}

@@ -3,40 +3,16 @@ import { Badge } from 'antd';
 import { NavLink, useNavigate } from 'react-router-dom';
 import '../../assets/css/style.css'
 import axios from 'axios';
+// import { useCart } from '../../context/CartContext';
+import { useGlobalContext } from '../../context/GlobalContext';
 
 const TopNav = () => {
 
     const navigate = useNavigate();
-    
-    const[carts, setCarts] = useState([]);
-    const[wishList, setWishList] = useState([]);
-
-    const wishLength = wishList?.length;
-    const cartLength = carts?.items?.length;
+    const { countCart , countWish } = useGlobalContext();
 
     useEffect(() => {
-        loadCarts();
-        loadWishList();
     }, []);
-
-    const loadCarts = async () => {
-        try {
-          const token = localStorage.getItem('token'); // get the token from local storage
-          const { data } = await axios.get("/carts", { headers: { Authorization: token } });
-          setCarts(data);
-        } catch (err) {
-          console.log(err);
-        }
-    };
-    const loadWishList = async () => {
-        try {
-          const token = localStorage.getItem('token'); // get the token from local storage
-          const { data } = await axios.get("/wishlists", { headers: { Authorization: token } });
-          setWishList(data.wishlist);
-        } catch (err) {
-          console.log(err);
-        }
-    };
     
 
     return (
@@ -57,7 +33,7 @@ const TopNav = () => {
                                     borderColor:"#2DB77A"
                                   }}
                                 className='fs-6 pt-1'
-                                count={wishLength}
+                                count={countWish}
                                 offset={[-10, 5]}
                                 size="small"
                                 showZero={true}
@@ -73,7 +49,7 @@ const TopNav = () => {
                                   borderColor:"#2DB77A"
                                 }}
                                 className='fs-6 pt-1'
-                                count={cartLength}
+                                count={countCart}
                                 offset={[-24, 5]}
                                 size="small"
                                 showZero={true}

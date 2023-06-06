@@ -8,9 +8,9 @@ import 'antd/dist/reset.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js'
 import { AuthProvider } from './context/AuthContext';
-import { WishListProvider } from './context/WishListContext';
-import { CartProvider } from './context/CartContext';
 import { SearchProvider } from './context/SearchContext';
+import { CartProvider, GlobalContextProvider } from './context/GlobalContext';
+// import { GlobalContextProvider } from "./context/gobalContext";
 
 const container = document.getElementById('root');
 const root = createRoot(container);
@@ -18,13 +18,11 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      {/* <WishListProvider> */}
-        {/* <CartProvider> */}
+        <GlobalContextProvider>
           <SearchProvider>
             <App />
           </SearchProvider>
-        {/* </CartProvider> */}
-      {/* </WishListProvider> */}
+        </GlobalContextProvider>
     </AuthProvider>
   </React.StrictMode>
 );

@@ -24,7 +24,6 @@ const Orders = () => {
         if (auth?.token) getOrders();
     }, [auth?.token]);
 
-    
     const navigate = useNavigate();
 
 
@@ -101,7 +100,7 @@ const Orders = () => {
                                     <div className="container">
                                         <div className="row m-2">
                                             {o?.products?.map((p, i) => (
-                                                <OrderCard  key={i} p={p} o={o} remove={true} />
+                                                <OrderCard  i={i} p={p} o={o} remove={true} />
                                             ))}
                                         </div>
                                     </div>

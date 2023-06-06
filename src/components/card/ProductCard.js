@@ -3,13 +3,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useLocation, useNavigate } from 'react-router-dom';
 import "./product.css";
+// import { useCart } from '../../context/CartContext';
+import { useGlobalContext } from "../../context/GlobalContext";
 
 const ProductCard = ({p}) => {
+  const { checkCountCart , checkCountWish } = useGlobalContext();
 
   const [review, setReview] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const[wishList, setWishList] = useState([]);
+  // const[carts, loadCarts, countCart] = useCart();
 
+// console.log("jhon", checkCountCart())
+// console.log('Preview',p);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -37,6 +43,7 @@ const addToCart = async () => {
       const countQuantity = data.items[itemIndex].quantity;
       toast.success(`${countQuantity} Item Add to Cart Successfully`);
     }
+    checkCountCart();
   }
   catch (error) {
     console.error(error);
@@ -62,6 +69,7 @@ const loadWishList = async () => {
     const token = localStorage.getItem('token'); // get the token from local storage
     const { data } = await axios.get(`/wishlist/${p?._id}`, { headers: { Authorization: token } });
     setWishList(data.wishlist);
+    checkCountWish()
   } catch (err) {
     console.log(err);
   }
@@ -87,7 +95,10 @@ const loadWishList = async () => {
                 style={{ height: "150px", objectFit: "cover" }}
             />
             </a>
-            <span class="product-new-label" data-bs-toggle="Quantity" data-bs-placement="top">{p?.quantity}</span>
+            {/* {p?.type === 'new' || p?.type === 'sale' && (
+            <span class="product-new-label" data-bs-toggle="Quantity" data-bs-placement="top">{p?.type}</span>
+            )} */}
+            {/* <span class="product-new-label" data-bs-toggle="Quantity" data-bs-placement="top">{p?.type}</span> */}
             <ul class="product-links">
               <li>
                 <a onClick={addWishList} className='pointer' >

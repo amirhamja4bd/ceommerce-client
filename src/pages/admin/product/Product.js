@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import FullscreenLoader from '../../../components/nav/FullscreenLoader';
 import Lottie from "lottie-react";
 import shopping from '../../../assets/img/cube.json'
+import Editor from "../../../helper/Editor";
 
 const Product = () => {
 
@@ -26,6 +27,7 @@ const Product = () => {
     const [price, setPrice] = useState("");
     const [quantity, setQuantity] = useState("");
     const [photo, setPhoto] = useState("");
+    const [content, setContent] = useState('');
 
 
     const navigate = useNavigate();
@@ -65,7 +67,7 @@ const Product = () => {
             const productData = new FormData();
             productData.append("photo", photo);
             productData.append("title", title);
-            productData.append("description", description);
+            productData.append("description", content);
             productData.append("price", price);
             productData.append("category", category);
             productData.append("brand", brand);
@@ -137,14 +139,14 @@ const Product = () => {
                                     />
                                 </div>
                                 <div class="form-group">
-                                    
-                                    <textarea 
+                                    <Editor content={content} setContent={setContent} />
+                                    {/* <textarea 
                                     class="form-control my-2 animated fadeInUp" 
                                     placeholder='Description' 
                                     id="product-description" rows="3"
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
-                                    ></textarea>
+                                    ></textarea> */}
                                 </div>
 
                                 <Select

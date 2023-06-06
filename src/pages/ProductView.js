@@ -10,19 +10,39 @@ import { toast } from 'react-hot-toast';
 import { BsStarHalf, BsStarFill } from 'react-icons/bs';
 import Swal from 'sweetalert2'
 import { useAuth } from '../context/AuthContext';
+import HTMLRenderer from '../helper/HTMLRender';
+import { useGlobalContext } from '../context/GlobalContext';
+import { FaStar } from 'react-icons/fa';
+import { Popconfirm } from 'antd';
 
 const ProductView = () => {
 
     const [auth, setAuth] = useAuth();
+    const { checkCountCart , checkCountWish } = useGlobalContext();
 
     const [review, setReview] = useState([]);
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState('');
+    const [ratingUpdate, setRatingUpdate] = React.useState(0);
     const [product, setProduct] = useState({});
     const [cartProductId, setCartProductId] = useState("");
     const [related, setRelated] = useState([]);
     const [quantity, setQuantity] = useState(1);
     const [content, setContent] = useState("");
+    const [updatedContent, setUpdatedContent] = useState('');
+    const [expandedComments, setExpandedComments] = React.useState([]);
 
-// console.log("product",product)
+    const toggleComment = (index) => {
+        setExpandedComments((prevExpandedComments) => {
+        const newExpandedComments = [...prevExpandedComments];
+        newExpandedComments[index] = !newExpandedComments[index];
+        return newExpandedComments;
+        });
+    };
+
+console.log("updatedContent",updatedContent)
+// console.log("rav",review?._id)
+// console.log("reviews",review)
 
     const navigate = useNavigate();
     const params = useParams();
@@ -64,6 +84,7 @@ const ProductView = () => {
           if (itemIndex !== -1) {
             const countQuantity = data.items[itemIndex].quantity;
             toast.success(`${countQuantity} Item Add to Cart Successfully`);
+            checkCountCart()
           }
         }
         catch (error) {
@@ -87,36 +108,74 @@ const ProductView = () => {
     const submitReview = async (e) => {
         e.preventDefault()
         try {
-          const {data} = await axios.post('/review', { product: cartProductId, content , rating: 5 });
-            toast.success('Review Add Successfully');
-            setContent("")
+          const {data} = await axios.post(`/review/${product?._id}`, { product: cartProductId, content: comment , rating: rating });
+        if(data?.error){
+            console.log(data?.error);
+            toast.error(data?.error)
+        }
+        else{
+          toast.success('Review Add Successfully');
+            setRating(0);
+            setComment('');
             loadProduct();
+        }
         }
         catch (error) {
           console.error(error);
-          toast.error('Could not add item to Review');
-          navigate(`/login`, { state: location.pathname, });
+          toast.error(error?.response?.data?.error);
+        //   navigate(`/login`, { state: location.pathname, });
+        }
+      };
+
+    const updateReview = async (reviewId) => {
+        // e.preventDefault()
+        console.log(`Update`, reviewId);
+        try {
+          const {data} = await axios.put(`/review/${reviewId}/${product?._id}`, { rating: ratingUpdate, content: updatedContent  });
+        if(data?.error){
+            console.log(data?.error);
+            toast.error(data?.error)
+        }
+        else{
+          toast.success('Review Update Successfully');
+            setRatingUpdate(0);
+            setUpdatedContent('');
+            loadProduct();
+            setExpandedComments([]);
+        }
+        }
+        catch (error) {
+          console.error(error);
+          toast.error(error?.response?.data?.error);
         }
       };
 
       // Delete sweetalert2
-    const handleDelete = async ( id ) =>{
+    // const handleDelete = async ( id ) =>{
         
-        const result = await Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        });
-        if (result.isConfirmed) {
-            await axios.delete(`/review/${id}`);
-            loadProduct();
-            return result;
+    //     const result = await Swal.fire({
+    //         title: 'Are you sure?',
+    //         text: "You won't be able to revert this!",
+    //         icon: 'warning',
+    //         showCancelButton: true,
+    //         confirmButtonColor: '#3085d6',
+    //         cancelButtonColor: '#d33',
+    //         confirmButtonText: 'Yes, delete it!'
+    //     });
+    //     if (result.isConfirmed) {
+    //         await axios.delete(`/review/${id}`);
+    //         loadProduct();
+    //         return result;
+    //     }
+    // }
+    const handleDelete = async (id) => {
+        try {
+          await axios.delete(`/review/${id}`);
+          loadProduct();
+        } catch (error) {
+          // Handle error
         }
-    }
+      };
 
     const handleIncrement = () => {
         if (quantity < 12) {
@@ -130,7 +189,30 @@ const ProductView = () => {
     }
     };
 
+    const handleRatingChange = (value) => {
+        setRating(value);
+      };
+    
+      const handleReviewCreate = (event) => {
+        setComment(event.target.value);
+      };
+      
+      const handleRatingUpdate = (value) => {
+        setRatingUpdate(value);
+        console.log("val",value);
+      };
 
+      const generateStars = (reviews) => {
+        const stars = [];
+        for (let i = 1; i <= reviews; i++) {
+          stars.push(
+            <FaStar key={i} className="text-warning inline-block mr-1" />
+          );
+        }
+        return stars;
+      };
+   
+    
     return (
         <div>
             <div className="container">
@@ -211,7 +293,7 @@ const ProductView = () => {
                             <div className="row p-3">
                                 <div className="col-md-8">
                                     <h4 className="">Product Description</h4><hr />
-                                    <p className="card-text lead">{product?.description}</p>
+                                    <p className="lead">{ <HTMLRenderer htmlString={product?.description}/>}</p>
                                 </div>
                                 <div className="col-md-4">
                                     <h4 className="">Product Details</h4><hr />
@@ -256,47 +338,114 @@ const ProductView = () => {
                         </div>
                         <div class="tab-pane fade" id="nav-review" role="tabpanel" aria-labelledby="nav-review-tab" tabindex="0">
                             {review?.length ? (
-                                <div className=" p-3">
-                                    <h4>Ratings & Reviews of {product?.title}</h4>
+                                <div className=" p-3 ">
+                                    <h5 className='pb-4'>Ratings & Reviews of {product?.title}</h5>
                                     
-                                    {review?.map((r)=>(
-                                        <div className="w-100 mt-2 d-flex align-items-center">
+                                    {review?.map((r , i)=>(
+                                      
+                                        <div className="w-100 mt-2 d-flex align-items-start">
                                             <div className="pe-2">
-                                                <FaUserCircle style={{width:"40px", height:"40px"}}/>
+                                                <img src={`${process.env.REACT_APP_API}/user/photo/${r?.user?._id}`} className='shadow rounded-circle'  style={{width:"50px", height:"50px"}} alt="rp" />
+                                            
+                                                {/* <FaUserCircle style={{width:"50px", height:"50px"}}/> */}
                                             </div>
-                                            <div className=" border w-100 p-2">
-                                                <small className='text-warning'> <BsStarFill /><BsStarFill /><BsStarFill /><BsStarFill /><BsStarHalf/> </small>
-                                                    <p className='mt-0 small w-100' > {r?.user?.fullName} </p>
-                                                <div className=" d-flex ">
-                                                    <p className='mt-0' >{r?.content}</p> 
-                                                    
+                                            <div className=" border rounded w-100 p-2">
+                                                <div className="d-flex justify-content-between " style={{ height: '25px' }}>
+                                                <div className="">{generateStars(r?.rating)}</div>
+                                                    {auth.user._id === r?.user?._id &&
+                                                    <div className="d-flex">
+                                                        <p onClick={() => toggleComment(i)} className="pointer mx-3"><i className="fa-solid fa-pen-to-square text-primary"></i></p>
+                                                        <p className="pointer mx-2">
+                                                            <Popconfirm
+                                                                title="Are you sure? You Delete this review"
+                                                                onConfirm={() => handleDelete(r?._id)}
+                                                                okText="Yes"
+                                                                cancelText="No"
+                                                            >
+                                                                <i className="fa-solid fa-trash-can text-danger"></i>
+                                                            </Popconfirm>
+                                                        </p>
+                                                    </div>
+                                                    }
                                                 </div>
-                                            </div>
-                                            <div className="">
-                                                <p onClick={""} className="pointer ms-auto p-2"><i class="fa-solid fa-pen-to-square text-primary"></i></p>
-                                                <p onClick={handleDelete.bind(this, r?._id)} className="pointer p-2"><i class="fa-solid fa-trash-can text-danger"></i></p>
+                                                
+                                                    <p className='mt-0 small w-100' > {r?.user?.fullName || 'Inactive User'} </p>
+                                                {expandedComments[i] ? (
+                                                <>
+                                                <div className="">
+                                                    {[...Array(5)].map((_, index) => {
+                                                        const ratingValue = index + 1;
+                                                        return (
+                                                        <FaStar
+                                                            key={index}
+                                                            className={`star ${ratingValue <= ratingUpdate ? 'text-warning' : 'text-secondary'}`}
+                                                            size={18}
+                                                            onClick={() => handleRatingUpdate(ratingValue)}
+                                                        />
+                                                        );
+                                                    })}
+                                                    <textarea
+                                                    className="w-100 form-control bg-light my-2"
+                                                    defaultValue={r?.content}
+                                                    onChange={(e) => { setUpdatedContent(e.target.value) }}
+                                                    // onChange={handleContentChange}
+                                                    ></textarea>
+                                                </div>
+                                                    <button onClick={updateReview.bind(this, r?._id)} className='secondary-btn'>Update Review</button>
+                                                </>
+                                                ) : (
+                                                <>
+                                                    <p className=' mt-0'>{r?.content}</p>
+                                                </>
+                                                )}
                                             </div>
                                                 
                                         </div>
-                                        // <div className="w-100 mt-2">
-                                        //         <small className='text-warning'> <BsStarFill /><BsStarFill /><BsStarFill /><BsStarFill /><BsStarHalf/> </small>
-                                        //             <p className='mt-0 small w-100' ><FaUserCircle/> {r?.user?.fullName} </p>
-                                        //         <div className=" d-flex ">
-                                        //             <p className='mt-0' >{r?.content}</p> 
-                                        //             <p onClick={""} className="pointer ms-auto p-2"><i class="fa-solid fa-pen-to-square text-primary"></i></p>
-                                        //             <p onClick={handleDelete.bind(this, r?._id)} className="pointer p-2"><i class="fa-solid fa-trash-can text-danger"></i></p>
-                                        //         </div>
-                                        //         <hr />
-                                        // </div>
                                     ))}  
                                 </div>
                             ) : (
                             <p className='text-center'><img src={image} alt=""/></p>
                             )}
-                            <form onSubmit={submitReview} className=" d-flex">
+
+
+                            <div className="container">
+                                <h5 className='mt-4'>Add Your Review</h5>
+                                <form onSubmit={submitReview}>
+                                    <div className="form-group ">
+                                    <h6 className='text-secondary pt-2 pb-1 m-0' htmlFor="rating ">Your Rating*</h6>
+                                    <div className='mb-3'>
+                                        {[...Array(5)].map((_, index) => {
+                                        const ratingValue = index + 1;
+                                        return (
+                                            <FaStar
+                                            key={index}
+                                            className={`star ${ratingValue <= rating ? 'text-warning' : 'text-secondary'}`}
+                                            size={18}
+                                            // color={ratingValue <= rating ? 'gold' : 'gray'}
+                                            onClick={() => handleRatingChange(ratingValue)}
+                                            />
+                                        );
+                                        })}
+                                    </div>
+                                    </div>
+                                    <div className="form-group">
+                                    <h6 className='text-secondary pb-1 pt-2' htmlFor="comment">Your Review*</h6>
+                                    <textarea
+                                        className="form-control bg-light"
+                                        id="comment"
+                                        rows="5"
+                                        value={comment}
+                                        onChange={handleReviewCreate}
+                                    />
+                                    </div>
+                                    <button type="submit" className="secondary-btn mt-3">Submit</button>
+                                </form>
+                            </div>
+
+                            {/* <form onSubmit={submitReview} className=" d-flex">
                                 <input value={content} onChange={(e)=> setContent(e.target.value)} className='form-control border-0 px-5'  type="text" style={{borderRadius:"40px" , background:"#13aa6e2a"}} ></input>
                                 <button type='submit' className='secondary-btn' style={{borderRadius:"40px" , marginLeft:"-50px"}}>Send</button>
-                            </form>
+                            </form> */}
                         </div>
                     </div>
 

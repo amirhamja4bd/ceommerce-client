@@ -30,6 +30,7 @@ const Brand = () => {
         }
         catch(error){
             console.log(error);
+            // loader.classList.add("d-none")
         }
     }
 
@@ -54,6 +55,7 @@ const Brand = () => {
             else{
                 toast.success(`'${data.name}' is created successfully`);
                 setName("")
+                setPhoto("")
                 loadBrands();
                 loader.classList.add("d-none")
                 
