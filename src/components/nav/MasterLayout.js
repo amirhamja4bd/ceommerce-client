@@ -14,7 +14,7 @@ import '../../assets/css/style.css'
 import { Buffer } from 'buffer';
 import { useGlobalContext } from '../../context/GlobalContext';
 
-const image ="https://raw.githubusercontent.com/amirhamja4bd/portfolio/main/images/ZayanShop.png"
+const image ="https://raw.githubusercontent.com/amirhamja4bd/portfolio-html/main/images/ZayanShop.png"
 const image1 ="../../assets/img/ZayanShop.png"
 const image2 ="https://images.rawpixel.com/image_400/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm0zMjgtMzY2LXRvbmctMDhfMS5qcGc.jpg"
 
