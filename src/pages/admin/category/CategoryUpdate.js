@@ -33,6 +33,7 @@ const CategoryUpdate = () => {
         }
         catch(error){
             console.log(error);
+            loader.classList.add("d-none")
         }
     }
 

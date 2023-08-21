@@ -32,6 +32,7 @@ const Product = () => {
     const [id, setId] = useState("");
 
     const params = useParams();
+    const slug = params.slug
 
     const navigate = useNavigate();
 
@@ -39,7 +40,7 @@ const Product = () => {
         loadBrands();
         loadCategories();
         loadProducts();
-    },[])
+    },[slug])
     
     // Category Load
     const loadCategories =async () =>{
@@ -64,7 +65,7 @@ const Product = () => {
     }
     const loadProducts = async () => {
         try{
-            const {data} = await axios.get(`/product/${params.slug}`);
+            const {data} = await axios.get(`/product/${slug}`);
             setTitle(data.title);
             setDescription(data.description);
             setPrice(data.price);
@@ -105,6 +106,7 @@ const Product = () => {
         catch(error){
             console.log(error);
             toast.error('Product create failed. try again later');
+            loader.classList.remove("d-none")
         }
     };
         

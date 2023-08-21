@@ -31,6 +31,7 @@ const Category = () => {
         }
         catch(error){
             console.log(error);
+            loader.classList.add("d-none")
         }
     }
 
@@ -64,6 +65,7 @@ const Category = () => {
         catch(error){
             console.log(error);
             toast.error('Category create failed. try again later');
+            loader.classList.add("d-none")
         }
     };
 
@@ -82,7 +84,7 @@ const Category = () => {
         
         if (result.isConfirmed) {
             await axios.delete(`/category/${id}`);
-            window.location.href="/dashboard/admin/category"
+            loadCategories()
             loader.classList.add("d-none")
             return result;
         }
@@ -130,7 +132,7 @@ const Category = () => {
                                 </tbody>
                             </table>
                         </div>
-                        <div className="col-md-5 mt-5 bg-light h-100 shadow-sm">
+                        <div className="col-md-4 mx-auto mt-5 bg-light h-100 shadow-sm">
                             <div className="p-3 mt-2 mb-2 lead bg-light border-bottom">Create New Category</div>
                         
                             <div className=' mx-auto'>

@@ -30,6 +30,7 @@ const Brand = () => {
         }
         catch(error){
             console.log(error);
+            loader.classList.add("d-none")
             // loader.classList.add("d-none")
         }
     }
@@ -64,6 +65,7 @@ const Brand = () => {
         catch(error){
             console.log(error);
             toast.error('Brand create failed. try again later');
+            loader.classList.add("d-none")
         }
     };
 
@@ -81,7 +83,7 @@ const Brand = () => {
         });
         if (result.isConfirmed) {
             await axios.delete(`/brand/${id}`);
-            window.location.href="/dashboard/admin/brand"
+            loadBrands()
             return result;
         }
     }
@@ -128,7 +130,7 @@ const Brand = () => {
                                 </tbody>
                             </table>
                         </div>
-                        <div className="col-md-5 mt-5 bg-light h-100 shadow-sm">
+                        <div className="col-md-4 mx-auto mt-5 bg-light h-100 shadow-sm">
                         <div className="p-3 mt-2 mb-2 lead border-bottom bg-light">Create Brand</div>
                     
                         <div className=' mx-auto'>

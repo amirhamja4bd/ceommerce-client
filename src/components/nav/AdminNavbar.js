@@ -3,12 +3,12 @@ import {Container,Navbar, NavDropdown} from "react-bootstrap";
 import {Navigate, NavLink, useNavigate} from "react-router-dom";
 import '../../assets/css/sidebar.css'
 import '../../assets/css/dropdownmenu.css'
-import {  BsBoxArrowLeft, BsCartCheck } from "react-icons/bs";
+import {  BsBoxArrowLeft, BsCartCheck , BsCalendarRange } from "react-icons/bs";
 import { useAuth } from "../../context/AuthContext";
 import Accordion from 'react-bootstrap/Accordion';
 import { Buffer } from 'buffer';
 
-const image ="https://raw.githubusercontent.com/amirhamja4bd/portfolio/main/images/ZayanShop.png"
+const image ="https://raw.githubusercontent.com/amirhamja4bd/portfolio-html/main/images/ZayanShop.png"
 
 const AdminNavbar = (props) => {
 
@@ -134,6 +134,10 @@ const AdminNavbar = (props) => {
                         </Accordion.Body>
                     </Accordion.Item>
                 </Accordion>
+                <NavLink className={(navData) => navData.isActive ? "side-bar-item-active side-bar-item mt-2" : "side-bar-item mt-2" }  to="/dashboard/admin/coupon" >
+                    <BsCalendarRange className=" side-bar-item-icon"/>
+                    <span className="side-bar-item-caption">Coupon</span>
+                </NavLink>
                 <NavLink className={(navData) => navData.isActive ? "side-bar-item-active side-bar-item mt-2" : "side-bar-item mt-2" }  to="/dashboard/admin/orders" >
                     <BsCartCheck className=" side-bar-item-icon"/>
                     <span className="side-bar-item-caption">Orders Manage</span>

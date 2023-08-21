@@ -13,6 +13,7 @@ import { useSearch } from '../../context/SearchContext';
 import '../../assets/css/style.css'
 import { Buffer } from 'buffer';
 import { useGlobalContext } from '../../context/GlobalContext';
+import { BsBoxArrowLeft } from 'react-icons/bs';
 
 const image ="https://raw.githubusercontent.com/amirhamja4bd/portfolio-html/main/images/ZayanShop.png"
 const image1 ="../../assets/img/ZayanShop.png"
@@ -63,7 +64,7 @@ const MasterLayout = () => {
                         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                         <Navbar.Collapse id="responsive-navbar-nav">
                         
-                        <Nav className=' ms-auto t-head'>
+                        <Nav className=' ms-auto t-head d-flex align-items-center'>
                             <li className="nav-item">
                             <NavLink className="nav-link " aria-current="page" to="/">
                                 HOME
@@ -137,31 +138,72 @@ const MasterLayout = () => {
                                 </li>
                             </>
                             ) :(
-                            <div class="dropdown-center ms-2">
-                                <button class="main-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img
-                                    className="profile-img me-2"
-                                    src={`data:${auth?.user?.photo?.contentType};base64,${Buffer.from(photoData).toString("base64")}`}
-                                    alt=""
-                                    style={{ width: "30px", height: "30px" }}
-                                />
-                                    {auth?.user?.fullName}
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li className="nav-item">
-                                    <NavLink className="nav-link " aria-current="page" to={`/dashboard/${auth?.user?.role === 1 ? "admin/dashboard" : "user/profile"
-                            }`}>
-                                        <i className=" me-2 fa-solid fa-border-none"></i>  DASHBOARD
-                                    </NavLink>
-                                    </li>
-                                    <li><hr class="dropdown-divider"/></li>
-                                    <li className="nav-item">
-                                    <NavLink onClick={logout} to="/login" className="nav-link " aria-current="page">
-                                        <i className=" me-2 fa-solid fa-right-from-bracket"></i>  LOGOUT
-                                    </NavLink>
-                                    </li>
-                                </ul>
-                            </div>
+                                <div className="float-right h-auto d-flex ">
+                                    <div className="user-dropdown ">
+                                        <div className="d-flex my-bg-primary px-1 pt-1" style={{borderRadius:"40px"}}>
+                                            <p className="align-middle pe-2 text-light pt-2 text-dark" >
+                                            <img
+                                                className="profile-img me-2 border"
+                                                src={`data:${auth?.user?.photo?.contentType};base64,${Buffer.from(photoData).toString("base64")}`}
+                                                alt=""
+                                                style={{ width: "30px", height: "30px" }}
+                                            />
+                                            {auth?.user?.fullName}</p>
+                                        </div>
+                                        <div className="user-dropdown-content shadow ">
+                                            <div className="mt-4 text-center">
+                                            <img
+                                                className="profile-img"
+                                                src={`data:${auth?.user?.photo?.contentType};base64,${Buffer.from(photoData).toString("base64")}`}
+                                                alt=""
+                                                style={{ width: "30px", height: "30px" }}
+                                            />
+                                                {/* <img className='profile-img' src={auth?.user?.photo} alt="" style={{width:"30px", height:"30px"}}/> */}
+                                                {/* <i class="fa-solid fa-face-grin-tongue-squint"></i> */}
+                                                <h6 className="mt-2">{auth?.user?.fullName}</h6>
+                                                <hr className="user-dropdown-divider  p-0"/>
+                                            </div>
+                                            <NavLink to={`/dashboard/${auth?.user?.role === 1 ? "admin/dashboard" : "user/profile" }`} className="side-bar-item">
+                                                <i class="fa-solid fa-user side-bar-item-icon"></i>
+                                                <span className="side-bar-item-caption">Dashboard</span>
+                                            </NavLink>
+                                            <NavLink to={`/dashboard/${auth?.user?.role === 1 ? "admin/profile" : "user/profile" }`} className="side-bar-item">
+                                                <i class="fa-solid fa-user side-bar-item-icon"></i>
+                                                <span className="side-bar-item-caption">Profile</span>
+                                            </NavLink>
+                                            <a onClick={logout}  className="side-bar-item">
+                                                
+                                                <BsBoxArrowLeft  className=" side-bar-item-icon" />
+                                                <span className="side-bar-item-caption">Logout</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                 </div>
+                                 
+                            // <div class="dropdown-center ms-2">
+                            //     <button class="main-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            //     <img
+                            //         className="profile-img me-2"
+                            //         src={`data:${auth?.user?.photo?.contentType};base64,${Buffer.from(photoData).toString("base64")}`}
+                            //         alt=""
+                            //         style={{ width: "30px", height: "30px" }}
+                            //     />
+                            //         {auth?.user?.fullName}
+                            //     </button>
+                            //     <ul class="dropdown-menu">
+                            //         <li className="nav-item">
+                            //         <NavLink className="nav-link " aria-current="page" to={`/dashboard/${auth?.user?.role === 1 ? "admin/dashboard" : "user/profile" }`}>
+                            //             <i className=" me-2 fa-solid fa-border-none"></i>  DASHBOARD
+                            //         </NavLink>
+                            //         </li>
+                            //         <li><hr class="dropdown-divider"/></li>
+                            //         <li className="nav-item">
+                                    // <NavLink onClick={logout} to="/login" className="nav-link " aria-current="page">
+                                    //     <i className=" me-2 fa-solid fa-right-from-bracket"></i>  LOGOUT
+                                    // </NavLink>
+                            //         </li>
+                            //     </ul>
+                            // </div>
                             )}
                         </Nav>
                         </Navbar.Collapse>

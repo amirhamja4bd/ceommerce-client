@@ -37,6 +37,8 @@ import Address from '../pages/user/Address';
 import AddressUpdate from '../pages/user/AddressUpdate';
 import Checkout from '../components/card/Checkout';
 import UserDashboard from '../pages/admin/UserDashboard';
+import CouponUpdate from '../pages/admin/coupon/CouponUpdate';
+import CouponCreate from '../pages/admin/coupon/CouponCreate';
 
 
 const router = createBrowserRouter([
@@ -178,6 +180,14 @@ const router = createBrowserRouter([
         {
           path: "admin/product/update/:slug",
           element: <ProductUpdate/>,
+        },
+        {
+          path: "admin/coupon",
+          element: <CouponCreate/>,
+        },
+        {
+          path: "admin/coupon/update/:slug",
+          element: <CouponUpdate/>,
         },
         {
           path: "admin/orders",

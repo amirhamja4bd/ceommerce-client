@@ -53,7 +53,7 @@ const OrderCard = ({i, o, p , remove = true}) => {
                 <th scope="col">Price</th>
                 <th scope="col"  className=''>Quantity</th>
                 {remove &&
-                <th scope="col">Remove</th>
+                <th scope="col">Action</th>
                 }
             </tr>
         </thead>
